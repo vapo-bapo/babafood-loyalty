@@ -498,11 +498,11 @@
     alertInfo.classList.remove('show');
 
     const payload = {
-      first_name: fields.firstName.el.value.trim(),
-      last_name:  fields.lastName.el.value.trim(),
-      email:      fields.email.el.value.trim().toLowerCase(),
-      phone:      fields.phone.el.value.trim() || null,
-      birth_date: fields.birthDate.el.value || null,
+      nome:          fields.firstName.el.value.trim(),
+      cognome:       fields.lastName.el.value.trim(),
+      email:         fields.email.el.value.trim().toLowerCase(),
+      telefono:      fields.phone.el.value.trim() || null,
+      data_nascita:  fields.birthDate.el.value || null,
     };
 
     try {
@@ -516,7 +516,7 @@
 
       if (res.ok) {
         // Success → redirect to card
-        window.location.href = `card.html?token=${data.qr_token}`;
+        window.location.href = `card.html?token=${data.customer.qr_token}`;
       } else if (res.status === 409 || (data.error || '').toLowerCase().includes('exist')) {
         // Email already exists
         alertInfo.innerHTML = `
@@ -524,8 +524,8 @@
           <a id="linkToCard" href="#">Vai alla tua carta →</a>
         `;
         alertInfo.classList.add('show');
-        if (data.qr_token) {
-          document.getElementById('linkToCard').href = `card.html?token=${data.qr_token}`;
+        if (data.customer && data.customer.qr_token) {
+          document.getElementById('linkToCard').href = `card.html?token=${data.customer.qr_token}`;
         } else {
           document.getElementById('linkToCard').addEventListener('click', async (e) => {
             e.preventDefault();
