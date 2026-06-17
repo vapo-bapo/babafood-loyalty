@@ -727,17 +727,17 @@
       const data = await res.json();
 
       // Populate card
-      const fullName = `${data.first_name || ''} ${data.last_name || ''}`.trim().toUpperCase();
+      const c = data.customer || {};
+      const fullName = `${c.nome || ''} ${c.cognome || ''}`.trim().toUpperCase();
       document.getElementById('customerName').textContent = fullName || 'CLIENTE';
 
       const shortId = token.replace(/-/g, '').substring(0, 8).toUpperCase();
       document.getElementById('cardId').textContent = `ID: ${shortId}`;
 
-      const visits = parseInt(data.visit_count || data.visits || 0, 10);
+      const visits = parseInt(data.visit_count || 0, 10);
 
-      // QR code — encode the token URL (or just the token string)
-      const qrValue = `${window.location.origin}${window.location.pathname.replace('card.html','')}card.html?token=${token}`;
-      generateQR(qrValue);
+      // QR code — encode solo il token così la dashboard owner lo riconosce
+      generateQR(token);
 
       buildVisitDots(visits);
       buildStats(visits);
@@ -768,7 +768,7 @@
     document.getElementById('cardId').textContent = `ID: ${shortId}`;
 
     const demoVisits = 7;
-    generateQR(`${window.location.href}`);
+    generateQR(token);
     buildVisitDots(demoVisits);
     buildStats(demoVisits);
     setupWalletButtons(token);
