@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BABA FOOD — La tua Carta Fedeltà</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0A0A0A;
+      color: #FFFFFF;
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 30px rgba(204,0,0,0.3), 0 0 0 0 rgba(204,0,0,0.4); }
+      50%       { box-shadow: 0 0 50px rgba(204,0,0,0.5), 0 0 20px 8px rgba(204,0,0,0.15); }
+    }
+    @keyframes prize-pulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(204,0,0,0.6); }
+      50%       { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(204,0,0,0); }
+    }
+    @keyframes confetti-drop {
+      0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes cardAppear {
+      0%   { opacity: 0; transform: scale(0.92) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #CC0000, #FF2222, #CC0000, transparent);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* ── Page ── */
+    .page {
+      padding: 28px 20px 48px;
+      animation: fadeIn 0.5s ease both;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Loading state ── */
+    .loading-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      gap: 20px;
+    }
+    .loading-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid #2A2A2A;
+      border-top-color: #CC0000;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loading-text {
+      color: #AAAAAA;
+      font-size: 14px;
+    }
+
+    /* ── Error state ── */
+    .error-state {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+      gap: 16px;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .error-icon {
+      font-size: 52px;
+    }
+    .error-state h2 {
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .error-state p {
+      color: #AAAAAA;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .error-state a {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 13px 28px;
+      background: #CC0000;
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+    .error-state a:hover { background: #FF2222; }
+
+    /* ── Card content (hidden until loaded) ── */
+    .card-content {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .card-content.visible {
+      display: flex;
+      animation: fadeIn 0.6s ease both;
+    }
+
+    /* ── Prize banner ── */
+    .prize-banner {
+      display: none;
+      width: 100%;
+      background: #CC0000;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: prize-pulse 1.5s ease-in-out infinite;
+    }
+    .prize-banner.show { display: block; }
+    .prize-banner .prize-emoji { font-size: 32px; display: block; margin-bottom: 6px; }
+    .prize-banner .prize-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      animation: blink 1s ease-in-out infinite;
+    }
+    .prize-banner .prize-sub {
+      font-size: 13px;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    /* ── THE CARD ── */
+    .loyalty-card {
+      width: 100%;
+      background: linear-gradient(140deg, #1A0000 0%, #2A0000 60%, #1A0000 100%);
+      border: 1px solid #CC0000;
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(204, 0, 0, 0.3);
+      padding: 22px 20px;
+      position: relative;
+      overflow: hidden;
+      animation: cardAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    }
+
+    /* Decorative background pattern */
+    .loyalty-card::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 40px solid rgba(204, 0, 0, 0.07);
+      pointer-events: none;
+    }
+    .loyalty-card::after {
+      content: '';
+      position: absolute;
+      bottom: -50px;
+      left: -30px;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 30px solid rgba(204, 0, 0, 0.05);
+      pointer-events: none;
+    }
+
+    /* Card header row */
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .card-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-logo {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+    .card-brand-name {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #FFFFFF;
+    }
+
+    .card-type-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #CC0000;
+      background: rgba(204, 0, 0, 0.12);
+      border: 1px solid rgba(204, 0, 0, 0.3);
+      padding: 4px 8px;
+      border-radius: 20px;
+    }
+
+    /* Card divider */
+    .card-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(204,0,0,0.4), transparent);
+      margin: 14px 0;
+    }
+
+    /* Customer name */
+    .card-customer {
+      margin-bottom: 16px;
+    }
+    .card-customer-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #777777;
+      margin-bottom: 3px;
+    }
+    .card-customer-name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    /* QR code section */
+    .card-qr-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 4px 0 16px;
+    }
+
+    .qr-container {
+      background: #FFFFFF;
+      border-radius: 10px;
+      padding: 10px;
+      width: fit-content;
+    }
+
+    #qrcode canvas, #qrcode img {
+      display: block;
+      border-radius: 4px;
+    }
+
+    .qr-label {
+      margin-top: 8px;
+      font-size: 10px;
+      color: #555555;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    /* Visit dots */
+    .card-visits {
+      margin-top: 4px;
+    }
+    .visits-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #777777;
+      margin-bottom: 10px;
+    }
+    .visits-dots {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .visit-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid #3A0000;
+      background: transparent;
+      position: relative;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .visit-dot.filled {
+      background: #CC0000;
+      border-color: #CC0000;
+      box-shadow: 0 0 8px rgba(204, 0, 0, 0.5);
+    }
+    .visit-dot.prize-slot {
+      border-color: #CC0000;
+      border-style: dashed;
+      font-size: 13px;
+    }
+    .visit-dot.prize-slot.filled {
+      background: linear-gradient(135deg, #CC0000, #FF2222);
+      border-style: solid;
+      animation: prize-pulse 2s ease-in-out infinite;
+    }
+
+    /* Visit message */
+    .visits-message {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #AAAAAA;
+      line-height: 1.4;
+    }
+    .visits-message strong { color: #CC0000; }
+
+    /* Card footer */
+    .card-footer {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .card-id {
+      font-size: 9px;
+      color: #333333;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+    .card-valid {
+      font-size: 9px;
+      color: #333333;
+      text-align: right;
+    }
+
+    /* ── Wallet buttons ── */
+    .wallet-section {
+      margin-top: 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      animation: fadeInUp 0.6s ease 0.5s both;
+    }
+
+    .wallet-section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #555555;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .btn-wallet {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.15s, opacity 0.2s;
+      border: none;
+    }
+    .btn-wallet:hover { transform: translateY(-1px); opacity: 0.9; }
+    .btn-wallet:active { transform: translateY(0); }
+
+    .btn-apple-wallet {
+      background: #FFFFFF;
+      color: #000000;
+    }
+
+    .btn-google-wallet {
+      background: #1A73E8;
+      color: #FFFFFF;
+    }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      margin-top: 24px;
+      width: 100%;
+      display: flex;
+      gap: 10px;
+      animation: fadeInUp 0.6s ease 0.6s both;
+    }
+    .stat-box {
+      flex: 1;
+      background: #1A1A1A;
+      border: 1px solid #2A2A2A;
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 900;
+      color: #CC0000;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #666666;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ── Info note ── */
+    .info-note {
+      margin-top: 20px;
+      width: 100%;
+      background: #111111;
+      border: 1px solid #1E1E1E;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #666666;
+      line-height: 1.6;
+      text-align: center;
+      animation: fadeInUp 0.6s ease 0.7s both;
+    }
+    .info-note strong { color: #CC0000; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<div class="page">
+
+  <!-- Loading state -->
+  <div class="loading-state" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Carico la tua carta…</div>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-state" id="errorState">
+    <div class="error-icon">😕</div>
+    <h2>Carta non trovata</h2>
+    <p>Il link potrebbe essere scaduto o non valido.<br/>Registrati per ottenere la tua carta fedeltà.</p>
+    <a href="index.html">Registrati gratis</a>
+  </div>
+
+  <!-- Card content (shown after load) -->
+  <div class="card-content" id="cardContent">
+
+    <!-- Prize banner (shown if promotion_active) -->
+    <div class="prize-banner" id="prizeBanner">
+      <span class="prize-emoji">🎉</span>
+      <div class="prize-title">PANINO GRATIS!</div>
+      <div class="prize-sub">Mostra questa schermata al personale</div>
+    </div>
+
+    <!-- The loyalty card -->
+    <div class="loyalty-card" id="loyaltyCard">
+
+      <!-- Header -->
+      <div class="card-header">
+        <div class="card-brand">
+          <svg class="card-logo" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="17" fill="#220000" stroke="#CC0000" stroke-width="1.2"/>
+            <g transform="translate(6, 4)">
+              <rect x="2" y="17" width="20" height="4.5" rx="1" fill="#CC0000"/>
+              <path d="M4 17 C4 17 3 11 12 9 C21 7 21 17 21 17Z" fill="#FFFFFF"/>
+              <ellipse cx="12" cy="10" rx="5.5" ry="4" fill="#FFFFFF"/>
+            </g>
+            <text x="18" y="34" text-anchor="middle" fill="#CC0000" font-family="Inter, system-ui" font-size="4.5" font-weight="800">BABA FOOD</text>
+          </svg>
+          <div>
+            <div class="card-brand-name">BABA FOOD</div>
+          </div>
+        </div>
+        <div class="card-type-badge">Carta Fedeltà</div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <!-- Customer name -->
+      <div class="card-customer">
+        <div class="card-customer-label">Titolare</div>
+        <div class="card-customer-name" id="customerName">— —</div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <!-- QR Code -->
+      <div class="card-qr-wrap">
+        <div class="qr-container">
+          <div id="qrcode"></div>
+        </div>
+        <div class="qr-label">Mostra al personale per timbrare</div>
+      </div>
+
+      <div class="card-divider"></div>
+
+      <!-- Visit tracker -->
+      <div class="card-visits">
+        <div class="visits-label">Le tue visite</div>
+        <div class="visits-dots" id="visitsDots"></div>
+        <div class="visits-message" id="visitsMessage"></div>
+      </div>
+
+      <!-- Card footer -->
+      <div class="card-footer">
+        <div class="card-id" id="cardId">ID: ········</div>
+        <div class="card-valid">Carta digitale<br/>valida in cassa</div>
+      </div>
+
+    </div>
+
+    <!-- Wallet buttons -->
+    <div class="wallet-section" id="walletSection">
+      <div class="wallet-section-label">Aggiungi al wallet</div>
+
+      <a class="btn-wallet btn-apple-wallet" id="btnApple" href="#" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M13.5 2C13.5 2 14.2 4.5 12 6C9.8 4.5 10.5 2 10.5 2H13.5Z" fill="#000"/>
+          <path d="M16.5 13.5C16 14.8 15.6 15.4 14.9 16.3C13.9 17.6 12.6 17.6 11.5 16.6C10.8 16 10.1 16 9.5 16.6C8.3 17.7 7.1 17.6 6.1 16.3C3.5 13 3 8.5 4.8 6C5.8 4.5 7.2 3.8 8.5 3.8C9.5 3.8 10.3 4.3 11 4.3C11.7 4.3 12.6 3.7 13.8 3.7C14.7 3.7 15.9 4.1 16.8 5.1C14.2 6.5 14.6 10.3 16.5 13.5Z" fill="#000"/>
+        </svg>
+        Aggiungi ad Apple Wallet
+      </a>
+
+      <a class="btn-wallet btn-google-wallet" id="btnGoogle" href="#" style="display:none">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="10" r="8" fill="white" opacity="0.15"/>
+          <path d="M10 5.5C11.1 5.5 12.1 5.9 12.8 6.6L14.3 5.1C13.2 4.1 11.7 3.5 10 3.5C7.3 3.5 5 5.1 3.9 7.4L5.7 8.8C6.2 7 8 5.5 10 5.5Z" fill="white"/>
+          <path d="M16.5 10.2C16.5 9.7 16.4 9.2 16.3 8.7H10V11.5H13.7C13.5 12.5 12.9 13.3 12 13.8L13.8 15.2C15.4 13.8 16.5 12.1 16.5 10.2Z" fill="white"/>
+          <path d="M5.7 11.2C5.5 10.8 5.5 10.4 5.5 10C5.5 9.6 5.6 9.2 5.7 8.8L3.9 7.4C3.3 8.5 3 9.7 3 10C3 10.3 3.3 11.5 3.9 12.6L5.7 11.2Z" fill="white"/>
+          <path d="M10 16.5C11.7 16.5 13.2 15.9 14.3 14.9L12.5 13.5C11.9 13.9 11 14.2 10 14.2C8 14.2 6.3 12.8 5.7 11.2L3.9 12.6C5 14.9 7.3 16.5 10 16.5Z" fill="white"/>
+        </svg>
+        Aggiungi a Google Wallet
+      </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-strip" id="statsStrip">
+      <div class="stat-box">
+        <div class="stat-value" id="statVisits">0</div>
+        <div class="stat-label">Visite totali</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statRemaining">10</div>
+        <div class="stat-label">Al prossimo premio</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-value" id="statPrizes">0</div>
+        <div class="stat-label">Premi vinti</div>
+      </div>
+    </div>
+
+    <!-- Info note -->
+    <div class="info-note">
+      Mostra il <strong>QR code</strong> al personale ad ogni visita.<br/>
+      Alla <strong>10ª visita</strong> ricevi un panino gratis! 🥪
+    </div>
+
+  </div><!-- /card-content -->
+
+</div><!-- /page -->
+
+<script>
+  const API_BASE = 'http://localhost:3000';
+
+  // ── Device detection ──
+  const isIOS     = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const isAndroid = /Android/.test(navigator.userAgent);
+
+  // ── Get token from URL ──
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('token');
+
+  // ── DOM refs ──
+  const loadingState = document.getElementById('loadingState');
+  const errorState   = document.getElementById('errorState');
+  const cardContent  = document.getElementById('cardContent');
+
+  function showError(msg) {
+    loadingState.style.display = 'none';
+    if (msg) {
+      errorState.querySelector('p').textContent = msg;
+    }
+    errorState.style.display = 'flex';
+  }
+
+  function buildVisitDots(visits) {
+    const TOTAL = 10;
+    const dotsEl = document.getElementById('visitsDots');
+    const msgEl  = document.getElementById('visitsMessage');
+    dotsEl.innerHTML = '';
+
+    for (let i = 1; i <= TOTAL; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'visit-dot';
+      if (i === TOTAL) {
+        dot.classList.add('prize-slot');
+        dot.textContent = visits >= TOTAL ? '🎁' : '🎁';
+      }
+      if (i <= visits) {
+        dot.classList.add('filled');
+        if (i < TOTAL) dot.textContent = '✓';
+      }
+      dotsEl.appendChild(dot);
+    }
+
+    const remaining = Math.max(0, TOTAL - (visits % TOTAL || (visits > 0 && visits % TOTAL === 0 ? TOTAL : 0)));
+    if (visits > 0 && visits % TOTAL === 0) {
+      msgEl.innerHTML = '<strong>🎉 HAI VINTO UN PANINO GRATIS!</strong> Mostralo al personale.';
+    } else if (remaining === 1) {
+      msgEl.innerHTML = 'Ancora <strong>1 visita</strong> per il tuo panino gratis! 🥪';
+    } else {
+      msgEl.innerHTML = `Ancora <strong>${remaining} visite</strong> per il tuo premio! 🎯`;
+    }
+  }
+
+  function buildStats(visits) {
+    const cycleVisits = visits % 10 || (visits > 0 && visits % 10 === 0 ? 10 : 0);
+    const prizes = Math.floor(visits / 10);
+    const remaining = Math.max(0, 10 - cycleVisits);
+
+    document.getElementById('statVisits').textContent    = visits;
+    document.getElementById('statRemaining').textContent = remaining === 0 ? '🎁' : remaining;
+    document.getElementById('statPrizes').textContent    = prizes;
+  }
+
+  function generateQR(value) {
+    const el = document.getElementById('qrcode');
+    el.innerHTML = '';
+    new QRCode(el, {
+      text: value,
+      width: 160,
+      height: 160,
+      colorDark: '#000000',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M,
+    });
+  }
+
+  function setupWalletButtons(token) {
+    const appleBtn  = document.getElementById('btnApple');
+    const googleBtn = document.getElementById('btnGoogle');
+
+    appleBtn.href  = `${API_BASE}/api/passes/apple/${token}`;
+    googleBtn.href = `${API_BASE}/api/passes/google/${token}`;
+
+    if (isIOS) {
+      appleBtn.style.display = 'flex';
+    } else if (isAndroid) {
+      googleBtn.style.display = 'flex';
+    } else {
+      // Desktop: show both
+      appleBtn.style.display  = 'flex';
+      googleBtn.style.display = 'flex';
+    }
+  }
+
+  async function loadCard() {
+    if (!token) {
+      showError('Link non valido. Scansiona di nuovo il QR code del ristorante.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/api/customer/${token}`);
+
+      if (res.status === 404) {
+        showError('Carta non trovata. Il link potrebbe essere scaduto.');
+        return;
+      }
+
+      if (!res.ok) {
+        showError('Errore del server. Riprova tra poco.');
+        return;
+      }
+
+      const data = await res.json();
+
+      // Populate card
+      const fullName = `${data.first_name || ''} ${data.last_name || ''}`.trim().toUpperCase();
+      document.getElementById('customerName').textContent = fullName || 'CLIENTE';
+
+      const shortId = token.replace(/-/g, '').substring(0, 8).toUpperCase();
+      document.getElementById('cardId').textContent = `ID: ${shortId}`;
+
+      const visits = parseInt(data.visit_count || data.visits || 0, 10);
+
+      // QR code — encode the token URL (or just the token string)
+      const qrValue = `${window.location.origin}${window.location.pathname.replace('card.html','')}card.html?token=${token}`;
+      generateQR(qrValue);
+
+      buildVisitDots(visits);
+      buildStats(visits);
+      setupWalletButtons(token);
+
+      // Prize banner
+      const isPromoActive = data.promotion_active ||
+        (visits > 0 && visits % 10 === 0);
+      if (isPromoActive) {
+        document.getElementById('prizeBanner').classList.add('show');
+      }
+
+      // Hide loading, show card
+      loadingState.style.display = 'none';
+      cardContent.classList.add('visible');
+
+    } catch (e) {
+      // API not reachable — show demo card if token present (dev mode)
+      console.warn('API not reachable, showing demo card:', e);
+      showDemoCard(token);
+    }
+  }
+
+  // ── Demo / offline mode ──
+  function showDemoCard(token) {
+    const shortId = token.replace(/-/g, '').substring(0, 8).toUpperCase();
+    document.getElementById('customerName').textContent = 'OSPITE DEMO';
+    document.getElementById('cardId').textContent = `ID: ${shortId}`;
+
+    const demoVisits = 7;
+    generateQR(`${window.location.href}`);
+    buildVisitDots(demoVisits);
+    buildStats(demoVisits);
+    setupWalletButtons(token);
+
+    loadingState.style.display = 'none';
+    cardContent.classList.add('visible');
+  }
+
+  // ── Boot ──
+  loadCard();
+</script>
+
+</body>
+</html>

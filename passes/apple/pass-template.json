@@ -1,0 +1,50 @@
+{
+  "formatVersion": 1,
+  "passTypeIdentifier": "pass.com.babafood.loyalty",
+  "serialNumber": "PLACEHOLDER",
+  "teamIdentifier": "PLACEHOLDER",
+  "webServiceURL": "https://tuodominio.com/api/passes/apple/",
+  "authenticationToken": "PLACEHOLDER",
+  "organizationName": "BABA FOOD",
+  "description": "Carta Fedeltà BABA FOOD",
+  "logoText": "BABA FOOD",
+  "foregroundColor": "rgb(255, 255, 255)",
+  "backgroundColor": "rgb(10, 10, 10)",
+  "labelColor": "rgb(204, 0, 0)",
+  "storeCard": {
+    "primaryFields": [
+      {
+        "key": "balance",
+        "label": "VISITE",
+        "value": 0
+      }
+    ],
+    "secondaryFields": [
+      {
+        "key": "name",
+        "label": "CLIENTE",
+        "value": "PLACEHOLDER"
+      }
+    ],
+    "auxiliaryFields": [
+      {
+        "key": "reward",
+        "label": "PROSSIMO PREMIO",
+        "value": "Alla 10a visita: Panino GRATIS"
+      }
+    ],
+    "backFields": [
+      {
+        "key": "terms",
+        "label": "PROGRAMMA FEDELTÀ",
+        "value": "Ogni visita conta! Alla 10a visita ottieni un panino gratis. La carta è personale e non trasferibile."
+      }
+    ]
+  },
+  "barcode": {
+    "message": "PLACEHOLDER_QR_TOKEN",
+    "format": "PKBarcodeFormatQR",
+    "messageEncoding": "iso-8859-1",
+    "altText": "BABA FOOD Loyalty"
+  }
+}

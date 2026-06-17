@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BABA FOOD — Registrati</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0A0A0A;
+      color: #FFFFFF;
+      font-family: 'Inter', system-ui, sans-serif;
+      min-height: 100vh;
+      max-width: 430px;
+      margin: 0 auto;
+      overflow-x: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-6px); }
+      40%       { transform: translateX(6px); }
+      60%       { transform: translateX(-4px); }
+      80%       { transform: translateX(4px); }
+    }
+
+    .top-bar {
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #CC0000, #FF2222, #CC0000, transparent);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+    }
+
+    .page {
+      padding: 32px 24px 48px;
+      animation: fadeIn 0.5s ease both;
+    }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #AAAAAA;
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: #CC0000; }
+    .back-link svg { flex-shrink: 0; }
+
+    /* ── Header ── */
+    .header {
+      animation: fadeInUp 0.6s ease 0.1s both;
+      margin-bottom: 32px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+
+    .header-logo-mini {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .header p {
+      font-size: 14px;
+      color: #AAAAAA;
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+
+    /* ── Form ── */
+    .form-card {
+      background: #1A1A1A;
+      border: 1px solid #2A2A2A;
+      border-radius: 16px;
+      padding: 24px 20px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+      flex: 1;
+    }
+
+    .form-group:last-child { margin-bottom: 0; }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #AAAAAA;
+    }
+
+    .form-group .required-star {
+      color: #CC0000;
+      margin-left: 2px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 13px 14px;
+      background: #0A0A0A;
+      border: 1.5px solid #2A2A2A;
+      border-radius: 8px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-group input::placeholder {
+      color: #444444;
+    }
+
+    .form-group input:focus {
+      border-color: #CC0000;
+      box-shadow: 0 0 0 3px rgba(204, 0, 0, 0.12);
+    }
+
+    .form-group input.invalid {
+      border-color: #FF2222;
+      box-shadow: 0 0 0 3px rgba(255, 34, 34, 0.12);
+      animation: shake 0.4s ease;
+    }
+
+    .form-group input.valid {
+      border-color: #2A6A2A;
+    }
+
+    .field-error {
+      font-size: 11px;
+      color: #FF2222;
+      min-height: 16px;
+      display: block;
+    }
+
+    /* ── Divider ── */
+    .form-divider {
+      height: 1px;
+      background: #2A2A2A;
+      margin: 20px 0;
+    }
+
+    /* ── Privacy note ── */
+    .privacy-note {
+      font-size: 12px;
+      color: #555555;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* ── Submit button ── */
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 16px;
+      background: #CC0000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      background: #FF2222;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-submit .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text { opacity: 0.7; }
+
+    /* ── Global error / success banners ── */
+    .alert {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 14px;
+      animation: fadeInUp 0.3s ease both;
+    }
+
+    .alert.error {
+      background: rgba(255, 34, 34, 0.12);
+      border: 1px solid #FF2222;
+      color: #FF6666;
+    }
+
+    .alert.info {
+      background: rgba(204, 0, 0, 0.12);
+      border: 1px solid #CC0000;
+      color: #FF9999;
+    }
+
+    .alert.show { display: block; }
+
+    .alert a {
+      color: #CC0000;
+      font-weight: 700;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* ── Steps indicator ── */
+    .steps-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 28px;
+      animation: fadeInUp 0.6s ease 0.15s both;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #555555;
+    }
+
+    .step-item.active {
+      color: #CC0000;
+      font-weight: 600;
+    }
+
+    .step-item.done { color: #2A7A2A; }
+
+    .step-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-item.active .step-circle {
+      background: #CC0000;
+      border-color: #CC0000;
+      color: white;
+    }
+
+    .step-sep {
+      width: 20px;
+      height: 1px;
+      background: #2A2A2A;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<div class="page">
+
+  <a href="index.html" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M10 3L5 8L10 13" stroke="#AAAAAA" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Torna indietro
+  </a>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <svg class="header-logo-mini" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="19" fill="#1A0000" stroke="#CC0000" stroke-width="1.5"/>
+        <g transform="translate(7, 5)">
+          <rect x="2" y="19" width="22" height="5" rx="1" fill="#CC0000"/>
+          <path d="M5 19 C5 19 3 12 13 10 C23 8 23 19 23 19Z" fill="#FFFFFF"/>
+          <ellipse cx="13" cy="11" rx="6" ry="4.5" fill="#FFFFFF"/>
+        </g>
+        <text x="20" y="37" text-anchor="middle" fill="#CC0000" font-family="Inter, system-ui" font-size="5" font-weight="800">BABA FOOD</text>
+      </svg>
+      <h1>Crea la tua carta</h1>
+    </div>
+    <p>Registrati gratuitamente e inizia ad accumulare punti fedeltà subito.</p>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps-hint">
+    <div class="step-item active">
+      <div class="step-circle">1</div>
+      Dati
+    </div>
+    <div class="step-sep"></div>
+    <div class="step-item">
+      <div class="step-circle">2</div>
+      Carta
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="form-card">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="firstName">Nome <span class="required-star">*</span></label>
+        <input type="text" id="firstName" placeholder="Mario" autocomplete="given-name" required />
+        <span class="field-error" id="err-firstName"></span>
+      </div>
+      <div class="form-group">
+        <label for="lastName">Cognome <span class="required-star">*</span></label>
+        <input type="text" id="lastName" placeholder="Rossi" autocomplete="family-name" required />
+        <span class="field-error" id="err-lastName"></span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="birthDate">Data di nascita</label>
+      <input type="date" id="birthDate" autocomplete="bday" />
+      <span class="field-error" id="err-birthDate"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email <span class="required-star">*</span></label>
+      <input type="email" id="email" placeholder="mario@email.com" autocomplete="email" required />
+      <span class="field-error" id="err-email"></span>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Numero di telefono</label>
+      <input type="tel" id="phone" placeholder="+39 333 1234567" autocomplete="tel" />
+      <span class="field-error" id="err-phone"></span>
+    </div>
+
+    <div class="form-divider"></div>
+
+    <p class="privacy-note">
+      Registrandoti accetti il trattamento dei dati per il programma fedeltà.<br/>
+      Nessuno spam, promesso. 🤝
+    </p>
+
+    <button class="btn-submit" id="submitBtn" type="button">
+      <div class="spinner"></div>
+      <span class="btn-text">Crea la mia carta 🎴</span>
+    </button>
+
+    <div class="alert error" id="alertError"></div>
+    <div class="alert info" id="alertInfo"></div>
+
+  </div>
+
+</div>
+
+<script>
+  const API_BASE = 'http://localhost:3000';
+
+  const fields = {
+    firstName: { el: document.getElementById('firstName'), err: document.getElementById('err-firstName') },
+    lastName:  { el: document.getElementById('lastName'),  err: document.getElementById('err-lastName')  },
+    birthDate: { el: document.getElementById('birthDate'), err: document.getElementById('err-birthDate') },
+    email:     { el: document.getElementById('email'),     err: document.getElementById('err-email')     },
+    phone:     { el: document.getElementById('phone'),     err: document.getElementById('err-phone')     },
+  };
+
+  // ── Real-time validation ──
+  function validateField(key) {
+    const { el, err } = fields[key];
+    const val = el.value.trim();
+    let msg = '';
+
+    if (key === 'firstName' || key === 'lastName') {
+      if (!val) msg = 'Campo obbligatorio';
+      else if (val.length < 2) msg = 'Almeno 2 caratteri';
+    }
+    if (key === 'email') {
+      if (!val) msg = 'Campo obbligatorio';
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) msg = 'Email non valida';
+    }
+    if (key === 'phone' && val) {
+      if (!/^[\d\s\+\-\(\)]{6,20}$/.test(val)) msg = 'Numero non valido';
+    }
+    if (key === 'birthDate' && val) {
+      const d = new Date(val);
+      const now = new Date();
+      const minAge = new Date(now.getFullYear() - 120, now.getMonth(), now.getDate());
+      if (d > now) msg = 'Data non valida';
+      else if (d < minAge) msg = 'Data non valida';
+    }
+
+    err.textContent = msg;
+    el.classList.toggle('invalid', !!msg && val !== '');
+    el.classList.toggle('valid', !msg && val !== '');
+    return !msg;
+  }
+
+  Object.keys(fields).forEach(key => {
+    fields[key].el.addEventListener('blur', () => validateField(key));
+    fields[key].el.addEventListener('input', () => {
+      if (fields[key].el.classList.contains('invalid')) validateField(key);
+    });
+  });
+
+  // ── Submit ──
+  document.getElementById('submitBtn').addEventListener('click', async () => {
+    // Validate all required fields
+    const validFirst    = validateField('firstName');
+    const validLast     = validateField('lastName');
+    const validEmail    = validateField('email');
+    const validBirth    = validateField('birthDate');
+    const validPhone    = validateField('phone');
+
+    if (!validFirst || !validLast || !validEmail || !validBirth || !validPhone) {
+      // Scroll to first error
+      const firstInvalid = document.querySelector('input.invalid');
+      if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    const alertError = document.getElementById('alertError');
+    const alertInfo  = document.getElementById('alertInfo');
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    alertError.classList.remove('show');
+    alertInfo.classList.remove('show');
+
+    const payload = {
+      first_name: fields.firstName.el.value.trim(),
+      last_name:  fields.lastName.el.value.trim(),
+      email:      fields.email.el.value.trim().toLowerCase(),
+      phone:      fields.phone.el.value.trim() || null,
+      birth_date: fields.birthDate.el.value || null,
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/api/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok) {
+        // Success → redirect to card
+        window.location.href = `card.html?token=${data.qr_token}`;
+      } else if (res.status === 409 || (data.error || '').toLowerCase().includes('exist')) {
+        // Email already exists
+        alertInfo.innerHTML = `
+          Hai già una carta! 🎴
+          <a id="linkToCard" href="#">Vai alla tua carta →</a>
+        `;
+        alertInfo.classList.add('show');
+        if (data.qr_token) {
+          document.getElementById('linkToCard').href = `card.html?token=${data.qr_token}`;
+        } else {
+          document.getElementById('linkToCard').addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+              const r = await fetch(`${API_BASE}/api/customer/by-email?email=${encodeURIComponent(payload.email)}`);
+              const d = await r.json();
+              if (r.ok) window.location.href = `card.html?token=${d.qr_token}`;
+            } catch {}
+          });
+        }
+      } else {
+        alertError.textContent = data.error || 'Si è verificato un errore. Riprova tra poco.';
+        alertError.classList.add('show');
+      }
+    } catch (e) {
+      alertError.textContent = 'Connessione non disponibile. Controlla la rete e riprova.';
+      alertError.classList.add('show');
+    } finally {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+    }
+  });
+
+  // Enter key submits
+  document.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('submitBtn').click();
+    });
+  });
+</script>
+
+</body>
+</html>

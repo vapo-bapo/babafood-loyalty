@@ -1,0 +1,1992 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>BABA FOOD — Staff</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --red-primary: #CC0000;
+      --red-accent: #FF2222;
+      --black: #0A0A0A;
+      --gray-dark: #1A1A1A;
+      --gray-mid: #2A2A2A;
+      --green-success: #00AA44;
+      --gold-promo: #FFD700;
+      --white: #FFFFFF;
+      --text-secondary: #AAAAAA;
+      --border-color: #333333;
+      --header-height: 56px;
+      --nav-height: 64px;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =============================================
+       HEADER
+    ============================================= */
+    header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      height: var(--header-height);
+      background: #1A0000;
+      border-bottom: 1px solid var(--red-primary);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 100;
+      gap: 12px;
+    }
+
+    .header-logo {
+      width: 32px;
+      height: 32px;
+      background: var(--red-primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--red-accent);
+      letter-spacing: 0.5px;
+    }
+
+    .header-subtitle {
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .header-status {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-success);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .status-dot.offline {
+      background: var(--red-accent);
+      animation: none;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* =============================================
+       MAIN CONTENT AREA
+    ============================================= */
+    main {
+      flex: 1;
+      overflow-y: auto;
+      padding-top: var(--header-height);
+      padding-bottom: var(--nav-height);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .tab-panel {
+      display: none;
+      min-height: calc(100vh - var(--header-height) - var(--nav-height));
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* =============================================
+       BOTTOM NAVIGATION
+    ============================================= */
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      height: var(--nav-height);
+      background: var(--gray-dark);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      z-index: 100;
+    }
+
+    .nav-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: color 0.2s, background 0.2s;
+      padding: 8px 4px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .nav-tab:active {
+      background: rgba(204, 0, 0, 0.1);
+    }
+
+    .nav-tab.active {
+      color: var(--red-accent);
+    }
+
+    .nav-tab svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .nav-tab.active svg {
+      filter: drop-shadow(0 0 6px rgba(255, 34, 34, 0.6));
+    }
+
+    /* =============================================
+       TAB 1: SCANNER
+    ============================================= */
+    .scanner-section {
+      padding: 16px;
+    }
+
+    .scanner-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .scanner-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #reader {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Override html5-qrcode default styles */
+    #reader > div {
+      border: none !important;
+    }
+
+    #reader video {
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      border-radius: 16px;
+    }
+
+    #reader img {
+      display: none !important;
+    }
+
+    /* Animated scan frame overlay */
+    .scan-frame {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .scan-corner {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-color: var(--red-accent);
+      border-style: solid;
+      border-width: 0;
+    }
+
+    .scan-corner.tl { top: 20%; left: 15%; border-top-width: 3px; border-left-width: 3px; border-radius: 4px 0 0 0; }
+    .scan-corner.tr { top: 20%; right: 15%; border-top-width: 3px; border-right-width: 3px; border-radius: 0 4px 0 0; }
+    .scan-corner.bl { bottom: 20%; left: 15%; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 4px; }
+    .scan-corner.br { bottom: 20%; right: 15%; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 4px 0; }
+
+    .scanning .scan-corner {
+      animation: pulse-corners 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-corners {
+      0%, 100% { opacity: 1; border-color: var(--red-accent); }
+      50% { opacity: 0.5; border-color: var(--red-primary); }
+    }
+
+    .scan-line {
+      position: absolute;
+      left: 15%;
+      right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red-accent), transparent);
+      top: 20%;
+      box-shadow: 0 0 8px var(--red-accent);
+    }
+
+    .scanning .scan-line {
+      animation: scan-sweep 2s linear infinite;
+    }
+
+    @keyframes scan-sweep {
+      0% { top: 22%; opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { top: 76%; opacity: 0; }
+    }
+
+    .scan-overlay-text {
+      position: absolute;
+      bottom: 10%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+
+    /* Camera permission error */
+    .camera-error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 24px;
+      text-align: center;
+      gap: 12px;
+      background: var(--gray-dark);
+      border-radius: 16px;
+    }
+
+    .camera-error-icon {
+      font-size: 48px;
+      margin-bottom: 4px;
+    }
+
+    .camera-error-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--red-accent);
+    }
+
+    .camera-error-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .camera-error-steps {
+      text-align: left;
+      background: var(--gray-mid);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 2;
+      width: 100%;
+    }
+
+    .btn-retry {
+      background: var(--red-primary);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-retry:active { background: var(--red-accent); }
+
+    /* Scanner info cards */
+    .scanner-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .info-card {
+      background: var(--gray-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .info-card-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--red-accent);
+      line-height: 1;
+    }
+
+    .info-card-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* =============================================
+       RESULT MODAL
+    ============================================= */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--gray-dark);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 360px;
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+      transform: scale(0.9) translateY(20px);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .modal-backdrop.visible .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      padding: 20px 20px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-icon {
+      font-size: 40px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .modal-title.success { color: var(--green-success); }
+    .modal-title.prize { color: var(--gold-promo); }
+    .modal-title.error { color: var(--red-accent); }
+
+    .modal-body {
+      padding: 16px 20px;
+    }
+
+    .customer-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 2px;
+    }
+
+    .customer-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+
+    .visits-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .visits-dots {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .visit-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .visit-dot.filled {
+      background: var(--red-primary);
+      border-color: var(--red-primary);
+      box-shadow: 0 0 6px rgba(204, 0, 0, 0.5);
+    }
+
+    .visit-dot.new {
+      background: var(--green-success);
+      border-color: var(--green-success);
+      animation: dot-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes dot-pop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .visits-count {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+
+    .visits-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .prize-message {
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid var(--gold-promo);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--gold-promo);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .prize-message.next {
+      background: rgba(0, 170, 68, 0.1);
+      border-color: var(--green-success);
+      color: var(--green-success);
+    }
+
+    /* Prize modal special */
+    .modal.prize-modal .modal-header {
+      background: linear-gradient(135deg, #1A0A00, #2A1500);
+      border-bottom-color: var(--gold-promo);
+    }
+
+    .modal.prize-modal {
+      border-color: var(--gold-promo);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+    }
+
+    .modal-footer {
+      padding: 12px 20px 20px;
+    }
+
+    .btn-ok {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-ok.normal {
+      background: var(--red-primary);
+      color: white;
+    }
+
+    .btn-ok.normal:active { background: var(--red-accent); }
+
+    .btn-ok.prize {
+      background: var(--gold-promo);
+      color: var(--black);
+    }
+
+    .btn-ok.prize:active { background: #FFC200; }
+
+    .countdown-bar {
+      height: 3px;
+      background: var(--border-color);
+      border-radius: 2px;
+      margin-top: 10px;
+      overflow: hidden;
+    }
+
+    .countdown-fill {
+      height: 100%;
+      background: var(--red-primary);
+      border-radius: 2px;
+      width: 100%;
+      transition: width linear;
+    }
+
+    .modal.prize-modal .countdown-fill {
+      background: var(--gold-promo);
+    }
+
+    /* Error modal */
+    .error-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* =============================================
+       TAB 2: CUSTOMERS
+    ============================================= */
+    .customers-section {
+      padding: 0;
+    }
+
+    .search-bar {
+      position: sticky;
+      top: 0;
+      padding: 12px 16px;
+      background: var(--black);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 10;
+    }
+
+    .search-input-wrapper {
+      position: relative;
+    }
+
+    .search-input-wrapper svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: var(--text-secondary);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--gray-mid);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 12px 10px 38px;
+      font-size: 14px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input::placeholder { color: var(--text-secondary); }
+    .search-input:focus { border-color: var(--red-primary); }
+
+    .customers-list {
+      padding: 8px 0;
+    }
+
+    .customer-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: background 0.15s;
+      gap: 12px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .customer-row:active {
+      background: rgba(255,255,255,0.04);
+    }
+
+    .customer-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--gray-mid);
+      border: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--red-accent);
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .customer-avatar.prize-avatar {
+      border-color: var(--gold-promo);
+      box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+    }
+
+    .customer-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .customer-row-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .customer-row-email {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
+    .customer-row-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .visits-badge {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--red-accent);
+    }
+
+    .prize-badge {
+      background: var(--gold-promo);
+      color: var(--black);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* Customer detail modal */
+    .customer-detail-modal {
+      background: var(--gray-dark);
+      border-radius: 20px 20px 0 0;
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 100%;
+      max-width: 600px;
+      z-index: 300;
+      border-top: 1px solid var(--border-color);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .customer-detail-modal.open {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .detail-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 299;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .detail-backdrop.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .detail-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border-color);
+      border-radius: 2px;
+      margin: 12px auto 0;
+    }
+
+    .detail-header {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .detail-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--gray-mid);
+      border: 2px solid var(--red-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--red-accent);
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+
+    .detail-name {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .detail-email {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .detail-body {
+      padding: 16px 20px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .detail-row:last-child { border-bottom: none; }
+
+    .detail-row-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-row-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      text-align: right;
+    }
+
+    .detail-dots {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    .detail-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      background: transparent;
+    }
+
+    .detail-dot.filled {
+      background: var(--red-primary);
+      border-color: var(--red-primary);
+      box-shadow: 0 0 6px rgba(204, 0, 0, 0.4);
+    }
+
+    .detail-close {
+      padding: 16px 20px 32px;
+    }
+
+    .btn-close {
+      width: 100%;
+      padding: 14px;
+      background: var(--gray-mid);
+      color: var(--white);
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-close:active { background: #3A3A3A; }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+      gap: 12px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 4px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .empty-text {
+      font-size: 13px;
+      color: #666;
+    }
+
+    /* Loading */
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-color);
+      border-top-color: var(--red-accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =============================================
+       TAB 3: STATISTICS
+    ============================================= */
+    .stats-section {
+      padding: 16px;
+    }
+
+    .stats-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--gray-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--red-primary);
+    }
+
+    .stat-card.gold::before { background: var(--gold-promo); }
+    .stat-card.green::before { background: var(--green-success); }
+
+    .stat-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-sublabel {
+      font-size: 10px;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    .stats-refresh-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .refresh-info {
+      font-size: 11px;
+      color: #555;
+    }
+
+    .btn-refresh {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-refresh:active { background: var(--gray-mid); }
+
+    .btn-refresh svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    /* =============================================
+       TOAST NOTIFICATION
+    ============================================= */
+    .toast {
+      position: fixed;
+      top: calc(var(--header-height) + 12px);
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--gray-mid);
+      color: var(--white);
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 400;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      max-width: calc(100vw - 40px);
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.error {
+      background: #3A0000;
+      border-color: var(--red-accent);
+      color: var(--red-accent);
+    }
+
+    /* =============================================
+       RESPONSIVE ADJUSTMENTS
+    ============================================= */
+    @media (max-height: 600px) {
+      .scanner-wrapper { aspect-ratio: 4 / 3; }
+    }
+
+    /* Safe area for devices with home indicator */
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      nav {
+        height: calc(var(--nav-height) + env(safe-area-inset-bottom));
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      main {
+        padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+      }
+      .customer-detail-modal {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-logo">🌮</div>
+    <div>
+      <div class="header-title">BABA FOOD</div>
+      <div class="header-subtitle">Staff Dashboard</div>
+    </div>
+    <div class="header-status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Online</span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main id="main">
+
+    <!-- TAB 1: SCANNER -->
+    <div class="tab-panel active" id="panel-scanner">
+      <div class="scanner-section">
+        <div class="scanner-label">Scannerizza la loyalty card</div>
+
+        <div class="scanner-wrapper" id="scannerWrapper">
+          <div id="reader"></div>
+          <div class="scan-frame scanning" id="scanFrame">
+            <div class="scan-corner tl"></div>
+            <div class="scan-corner tr"></div>
+            <div class="scan-corner bl"></div>
+            <div class="scan-corner br"></div>
+            <div class="scan-line"></div>
+            <div class="scan-overlay-text" id="overlayText">Inquadra il QR code della carta</div>
+          </div>
+        </div>
+
+        <div class="scanner-info">
+          <div class="info-card">
+            <div class="info-card-value" id="todayScans">—</div>
+            <div class="info-card-label">Scansioni oggi</div>
+          </div>
+          <div class="info-card">
+            <div class="info-card-value" id="todayPrizes">—</div>
+            <div class="info-card-label">Premi oggi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: CUSTOMERS -->
+    <div class="tab-panel" id="panel-customers">
+      <div class="customers-section">
+        <div class="search-bar">
+          <div class="search-input-wrapper">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              type="search"
+              class="search-input"
+              id="searchInput"
+              placeholder="Cerca per nome o email..."
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+          </div>
+        </div>
+        <div id="customersList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: STATISTICS -->
+    <div class="tab-panel" id="panel-stats">
+      <div class="stats-section">
+        <div class="stats-title">Riepilogo</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-value" id="statTotal">—</div>
+            <div class="stat-label">Clienti totali</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">📅</div>
+            <div class="stat-value" id="statToday">—</div>
+            <div class="stat-label">Visite oggi</div>
+          </div>
+          <div class="stat-card gold">
+            <div class="stat-icon">🎁</div>
+            <div class="stat-value" id="statPrizes">—</div>
+            <div class="stat-label">Premi erogati</div>
+            <div class="stat-sublabel">visite multiplo di 10</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✨</div>
+            <div class="stat-value" id="statNew">—</div>
+            <div class="stat-label">Nuovi clienti</div>
+            <div class="stat-sublabel">questa settimana</div>
+          </div>
+        </div>
+
+        <div class="stats-refresh-row">
+          <span class="refresh-info" id="lastRefresh">Aggiornamento automatico</span>
+          <button class="btn-refresh" id="btnRefreshStats">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6m12-4a9 9 0 0 1-15 6.7L3 16"/>
+            </svg>
+            Aggiorna
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav>
+    <button class="nav-tab active" data-tab="scanner" id="tab-scanner">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
+        <rect x="7" y="7" width="10" height="10" rx="1"/>
+      </svg>
+      Scanner
+    </button>
+    <button class="nav-tab" data-tab="customers" id="tab-customers">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+      Clienti
+    </button>
+    <button class="nav-tab" data-tab="stats" id="tab-stats">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"/>
+        <line x1="12" y1="20" x2="12" y2="4"/>
+        <line x1="6" y1="20" x2="6" y2="14"/>
+      </svg>
+      Statistiche
+    </button>
+  </nav>
+
+  <!-- SCAN RESULT MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal" id="resultModal">
+      <div class="modal-header">
+        <div class="modal-icon" id="modalIcon">✓</div>
+        <div class="modal-title success" id="modalTitle">VISITA REGISTRATA</div>
+      </div>
+      <div class="modal-body">
+        <div class="customer-name" id="modalName"></div>
+        <div class="customer-email" id="modalEmail"></div>
+        <div class="visits-row">
+          <div class="visits-dots" id="modalDots"></div>
+          <div class="visits-count" id="modalCount"></div>
+        </div>
+        <div class="visits-label" id="modalVisitsLabel"></div>
+        <div id="modalPrizeMsg"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ok normal" id="btnOk">OK — Scansiona altro</button>
+        <div class="countdown-bar">
+          <div class="countdown-fill" id="countdownFill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER DETAIL SHEET -->
+  <div class="detail-backdrop" id="detailBackdrop"></div>
+  <div class="customer-detail-modal" id="customerDetail">
+    <div class="detail-handle"></div>
+    <div class="detail-header">
+      <div class="detail-avatar" id="detailAvatar"></div>
+      <div>
+        <div class="detail-name" id="detailName"></div>
+        <div class="detail-email" id="detailEmail"></div>
+      </div>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+    <div class="detail-close">
+      <button class="btn-close" id="btnCloseDetail">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    'use strict';
+
+    // =============================================
+    // CONFIGURATION
+    // =============================================
+    const API_BASE_URL = 'http://localhost:3000';
+
+    // =============================================
+    // STATE
+    // =============================================
+    const state = {
+      currentTab: 'scanner',
+      isScanning: false,
+      scannerStarted: false,
+      scanCooldown: false,
+      html5QrCode: null,
+      customers: [],
+      filteredCustomers: [],
+      todayScans: 0,
+      todayPrizes: 0,
+      autoRefreshTimer: null,
+      statsRefreshTimer: null,
+      isOnline: navigator.onLine,
+    };
+
+    // =============================================
+    // UTILS
+    // =============================================
+
+    function initials(firstName, lastName) {
+      return ((firstName?.[0] || '') + (lastName?.[0] || '')).toUpperCase() || '?';
+    }
+
+    function formatDate(isoStr) {
+      if (!isoStr) return '—';
+      try {
+        return new Date(isoStr).toLocaleDateString('it-IT', {
+          day: '2-digit', month: '2-digit', year: 'numeric'
+        });
+      } catch { return '—'; }
+    }
+
+    function showToast(msg, isError = false, duration = 2800) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast' + (isError ? ' error' : '');
+      void el.offsetWidth;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), duration);
+    }
+
+    function setOnlineStatus(online) {
+      state.isOnline = online;
+      const dot = document.getElementById('statusDot');
+      const text = document.getElementById('statusText');
+      dot.className = 'status-dot' + (online ? '' : ' offline');
+      text.textContent = online ? 'Online' : 'Offline';
+    }
+
+    window.addEventListener('online', () => setOnlineStatus(true));
+    window.addEventListener('offline', () => setOnlineStatus(false));
+
+    // =============================================
+    // WEB AUDIO — BEEP
+    // =============================================
+    let audioCtx = null;
+
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        try {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) { /* audio not available */ }
+      }
+      return audioCtx;
+    }
+
+    function playBeep(type = 'success') {
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      try {
+        if (ctx.state === 'suspended') ctx.resume();
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        if (type === 'success') {
+          oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+          oscillator.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+          gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.35);
+        } else if (type === 'prize') {
+          // Happy fanfare
+          const freqs = [523, 659, 784, 1047];
+          freqs.forEach((f, i) => {
+            const osc2 = ctx.createOscillator();
+            const g2 = ctx.createGain();
+            osc2.connect(g2);
+            g2.connect(ctx.destination);
+            osc2.frequency.value = f;
+            g2.gain.setValueAtTime(0.25, ctx.currentTime + i * 0.1);
+            g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.1 + 0.3);
+            osc2.start(ctx.currentTime + i * 0.1);
+            osc2.stop(ctx.currentTime + i * 0.1 + 0.3);
+          });
+        } else {
+          // Error
+          oscillator.frequency.setValueAtTime(300, ctx.currentTime);
+          gainNode.gain.setValueAtTime(0.3, ctx.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          oscillator.start(ctx.currentTime);
+          oscillator.stop(ctx.currentTime + 0.4);
+        }
+      } catch (e) { /* ignore audio errors */ }
+    }
+
+    // =============================================
+    // NAVIGATION
+    // =============================================
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    function switchTab(tab) {
+      if (tab === state.currentTab) return;
+
+      // Stop scanner if leaving scanner tab
+      if (state.currentTab === 'scanner' && tab !== 'scanner') {
+        pauseScanner();
+      }
+
+      state.currentTab = tab;
+
+      document.querySelectorAll('.nav-tab').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === tab);
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'panel-' + tab);
+      });
+
+      // Resume scanner when switching back
+      if (tab === 'scanner') {
+        resumeScanner();
+      }
+
+      if (tab === 'customers') {
+        loadCustomers();
+      }
+
+      if (tab === 'stats') {
+        loadStats();
+      }
+    }
+
+    // =============================================
+    // SCANNER
+    // =============================================
+    function initScanner() {
+      const wrapper = document.getElementById('scannerWrapper');
+      const readerDiv = document.getElementById('reader');
+
+      // Check if html5-qrcode loaded
+      if (typeof Html5Qrcode === 'undefined') {
+        showScannerError('Libreria scanner non caricata. Controlla la connessione internet.');
+        return;
+      }
+
+      state.html5QrCode = new Html5Qrcode('reader', {
+        verbose: false,
+        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+      });
+
+      startScanner();
+    }
+
+    function startScanner() {
+      if (!state.html5QrCode || state.scannerStarted) return;
+
+      state.html5QrCode.start(
+        { facingMode: 'environment' },
+        {
+          fps: 10,
+          qrbox: { width: 220, height: 220 },
+          aspectRatio: 1.0,
+          disableFlip: false,
+        },
+        onQrSuccess,
+        onQrFailure
+      ).then(() => {
+        state.scannerStarted = true;
+        state.isScanning = true;
+        updateScannerUI();
+      }).catch(err => {
+        console.error('Scanner start error:', err);
+        const msg = err && err.toString().toLowerCase().includes('permission')
+          ? 'Permesso fotocamera negato.'
+          : (err?.message || String(err));
+        showScannerError(msg);
+      });
+    }
+
+    function pauseScanner() {
+      if (state.html5QrCode && state.scannerStarted) {
+        try { state.html5QrCode.pause(true); } catch (e) {}
+        state.isScanning = false;
+      }
+    }
+
+    function resumeScanner() {
+      if (state.html5QrCode && state.scannerStarted) {
+        try { state.html5QrCode.resume(); } catch (e) {}
+        state.isScanning = true;
+        updateScannerUI();
+      }
+    }
+
+    function updateScannerUI() {
+      const frame = document.getElementById('scanFrame');
+      const txt = document.getElementById('overlayText');
+      if (state.isScanning && !state.scanCooldown) {
+        frame.classList.add('scanning');
+        txt.textContent = 'Inquadra il QR code della carta';
+      } else {
+        frame.classList.remove('scanning');
+        txt.textContent = state.scanCooldown ? 'Pronto per la prossima scansione…' : '';
+      }
+    }
+
+    function showScannerError(message) {
+      const wrapper = document.getElementById('scannerWrapper');
+      const frame = document.getElementById('scanFrame');
+      frame.style.display = 'none';
+      wrapper.innerHTML = `
+        <div class="camera-error">
+          <div class="camera-error-icon">📷</div>
+          <div class="camera-error-title">Fotocamera non disponibile</div>
+          <div class="camera-error-text">${escapeHtml(message)}</div>
+          <div class="camera-error-steps">
+            <strong style="color:#fff">Per abilitare la fotocamera:</strong><br>
+            1. Apri Impostazioni del browser<br>
+            2. Vai su Privacy → Fotocamera<br>
+            3. Consenti l'accesso a questa pagina<br>
+            4. Ricarica la pagina
+          </div>
+          <button class="btn-retry" onclick="location.reload()">Riprova</button>
+        </div>
+      `;
+    }
+
+    function onQrSuccess(decodedText) {
+      if (state.scanCooldown) return;
+
+      // Validate UUID format
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(decodedText.trim())) {
+        // Not a valid loyalty card token — ignore
+        return;
+      }
+
+      state.scanCooldown = true;
+      updateScannerUI();
+
+      // Unlock audio on user gesture context (already happened — camera)
+      ensureAudioCtx();
+
+      postScan(decodedText.trim());
+    }
+
+    function onQrFailure() {
+      // Called continuously when no QR found — ignore
+    }
+
+    async function postScan(token) {
+      let data;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/scan/${encodeURIComponent(token)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) {
+          const errBody = await res.json().catch(() => ({}));
+          throw new Error(errBody.error || errBody.message || `HTTP ${res.status}`);
+        }
+
+        data = await res.json();
+        setOnlineStatus(true);
+        showScanResult(data);
+      } catch (err) {
+        setOnlineStatus(false);
+        console.error('Scan error:', err);
+        showScanError(err.message || 'Errore di rete. Riprova.');
+      }
+    }
+
+    // =============================================
+    // SCAN RESULT MODAL
+    // =============================================
+    let countdownTimer = null;
+
+    function showScanResult(data) {
+      const customer = data.customer || data;
+      const visits = customer.total_visits || customer.visits || 0;
+      const isPrize = (visits % 10 === 0) && visits > 0;
+
+      // Populate modal
+      document.getElementById('modalName').textContent =
+        `${customer.first_name || ''} ${customer.last_name || ''}`.trim() || 'Cliente';
+      document.getElementById('modalEmail').textContent = customer.email || '';
+
+      // Dots (show last 10 cycle)
+      const cycleStart = Math.floor((visits - 1) / 10) * 10;
+      const cyclePos = isPrize ? 10 : visits - cycleStart;
+      const dotsEl = document.getElementById('modalDots');
+      dotsEl.innerHTML = '';
+      for (let i = 1; i <= 10; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'visit-dot';
+        if (i < cyclePos) dot.classList.add('filled');
+        if (i === cyclePos) {
+          dot.classList.add('filled', 'new');
+          if (isPrize) dot.style.background = 'var(--gold-promo)';
+          if (isPrize) dot.style.borderColor = 'var(--gold-promo)';
+        }
+        dotsEl.appendChild(dot);
+      }
+
+      document.getElementById('modalCount').textContent = `${visits}/10`;
+      if (visits > 10) {
+        const cycle = Math.floor(visits / 10);
+        document.getElementById('modalCount').textContent = `${visits % 10 || 10}/10`;
+        document.getElementById('modalVisitsLabel').textContent = `Ciclo ${cycle + (isPrize ? 0 : 0)} — ${visits} visite totali`;
+      } else {
+        document.getElementById('modalVisitsLabel').textContent = `${visits} visit${visits === 1 ? 'a' : 'e'} total${visits === 1 ? 'e' : 'i'}`;
+      }
+
+      const prizeMsg = document.getElementById('modalPrizeMsg');
+      const modal = document.getElementById('resultModal');
+      const title = document.getElementById('modalTitle');
+      const icon = document.getElementById('modalIcon');
+      const btnOk = document.getElementById('btnOk');
+
+      if (isPrize) {
+        icon.textContent = '🎉';
+        title.textContent = 'PANINO GRATIS!';
+        title.className = 'modal-title prize';
+        prizeMsg.innerHTML = '<div class="prize-message">🎁 Consegna il premio al cliente!</div>';
+        modal.className = 'modal prize-modal';
+        btnOk.className = 'btn-ok prize';
+        document.getElementById('modalCount').textContent = '10/10';
+        playBeep('prize');
+        state.todayPrizes++;
+      } else {
+        const remaining = 10 - (visits % 10);
+        icon.textContent = '✓';
+        title.textContent = 'VISITA REGISTRATA';
+        title.className = 'modal-title success';
+        prizeMsg.innerHTML = remaining === 1
+          ? '<div class="prize-message next">🌟 Ancora 1 visita al premio!</div>'
+          : `<div class="prize-message next">Ancora ${remaining} visite al premio</div>`;
+        modal.className = 'modal';
+        btnOk.className = 'btn-ok normal';
+        playBeep('success');
+        state.todayScans++;
+      }
+
+      updateTodayCounters();
+      openModal();
+    }
+
+    function showScanError(message) {
+      const modal = document.getElementById('resultModal');
+      const icon = document.getElementById('modalIcon');
+      const title = document.getElementById('modalTitle');
+      const prizeMsg = document.getElementById('modalPrizeMsg');
+      const btnOk = document.getElementById('btnOk');
+
+      icon.textContent = '✗';
+      title.textContent = 'ERRORE';
+      title.className = 'modal-title error';
+      document.getElementById('modalName').textContent = '';
+      document.getElementById('modalEmail').textContent = message;
+      document.getElementById('modalDots').innerHTML = '';
+      document.getElementById('modalCount').textContent = '';
+      document.getElementById('modalVisitsLabel').textContent = '';
+      prizeMsg.innerHTML = '';
+      modal.className = 'modal';
+      btnOk.className = 'btn-ok normal';
+
+      playBeep('error');
+      openModal();
+    }
+
+    function openModal() {
+      const backdrop = document.getElementById('modalBackdrop');
+      backdrop.classList.add('visible');
+      startCountdown(3000);
+    }
+
+    function closeModal() {
+      clearCountdown();
+      const backdrop = document.getElementById('modalBackdrop');
+      backdrop.classList.remove('visible');
+
+      // Resume scanning after brief pause
+      setTimeout(() => {
+        state.scanCooldown = false;
+        if (state.currentTab === 'scanner') {
+          updateScannerUI();
+        }
+      }, 300);
+    }
+
+    function startCountdown(ms) {
+      clearCountdown();
+      const fill = document.getElementById('countdownFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+      void fill.offsetWidth;
+      fill.style.transition = `width ${ms}ms linear`;
+      fill.style.width = '0%';
+      countdownTimer = setTimeout(closeModal, ms);
+    }
+
+    function clearCountdown() {
+      if (countdownTimer) {
+        clearTimeout(countdownTimer);
+        countdownTimer = null;
+      }
+      const fill = document.getElementById('countdownFill');
+      fill.style.transition = 'none';
+      fill.style.width = '100%';
+    }
+
+    document.getElementById('btnOk').addEventListener('click', closeModal);
+    document.getElementById('modalBackdrop').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    function updateTodayCounters() {
+      document.getElementById('todayScans').textContent = state.todayScans;
+      document.getElementById('todayPrizes').textContent = state.todayPrizes;
+    }
+
+    // =============================================
+    // CUSTOMERS
+    // =============================================
+    let customersRefreshTimer = null;
+
+    async function loadCustomers(showLoader = true) {
+      const listEl = document.getElementById('customersList');
+
+      if (showLoader && state.customers.length === 0) {
+        listEl.innerHTML = '<div class="loading-spinner"><div class="spinner"></div>Caricamento clienti…</div>';
+      }
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/customers`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        state.customers = Array.isArray(data) ? data : (data.customers || []);
+        setOnlineStatus(true);
+        applySearch();
+      } catch (err) {
+        setOnlineStatus(false);
+        if (state.customers.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">📡</div>
+              <div class="empty-title">Nessun dato disponibile</div>
+              <div class="empty-text">Impossibile connettersi al server.<br>${escapeHtml(err.message)}</div>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function applySearch() {
+      const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      state.filteredCustomers = state.customers.filter(c => {
+        if (!query) return true;
+        const name = `${c.first_name || ''} ${c.last_name || ''}`.toLowerCase();
+        const email = (c.email || '').toLowerCase();
+        return name.includes(query) || email.includes(query);
+      });
+      renderCustomers();
+    }
+
+    function renderCustomers() {
+      const listEl = document.getElementById('customersList');
+      const list = state.filteredCustomers;
+
+      if (list.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">${state.customers.length === 0 ? '👥' : '🔍'}</div>
+            <div class="empty-title">${state.customers.length === 0 ? 'Nessun cliente' : 'Nessun risultato'}</div>
+            <div class="empty-text">${state.customers.length === 0 ? 'Nessun cliente registrato.' : 'Prova a modificare la ricerca.'}</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by visits desc
+      const sorted = [...list].sort((a, b) => (b.total_visits || b.visits || 0) - (a.total_visits || a.visits || 0));
+
+      listEl.innerHTML = sorted.map(c => {
+        const visits = c.total_visits || c.visits || 0;
+        const hasPrize = c.promotion_active || false;
+        const init = initials(c.first_name, c.last_name);
+        const fullName = `${c.first_name || ''} ${c.last_name || ''}`.trim();
+        return `
+          <div class="customer-row" onclick="openCustomerDetail('${escapeAttr(c.id || c.qr_token || '')}')">
+            <div class="customer-avatar ${hasPrize ? 'prize-avatar' : ''}">${escapeHtml(init)}</div>
+            <div class="customer-info">
+              <div class="customer-row-name">${escapeHtml(fullName || 'Cliente senza nome')}</div>
+              <div class="customer-row-email">${escapeHtml(c.email || '—')}</div>
+            </div>
+            <div class="customer-row-right">
+              <div class="visits-badge">${visits} vis.</div>
+              ${hasPrize ? '<div class="prize-badge">Premio attivo</div>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applySearch);
+
+    // Auto-refresh customers every 30 seconds
+    function startCustomerAutoRefresh() {
+      if (customersRefreshTimer) clearInterval(customersRefreshTimer);
+      customersRefreshTimer = setInterval(() => {
+        if (state.currentTab === 'customers') {
+          loadCustomers(false);
+        }
+      }, 30000);
+    }
+
+    startCustomerAutoRefresh();
+
+    // =============================================
+    // CUSTOMER DETAIL
+    // =============================================
+    function openCustomerDetail(id) {
+      const customer = state.customers.find(c =>
+        (c.id && String(c.id) === String(id)) || (c.qr_token === id)
+      );
+      if (!customer) return;
+
+      const visits = customer.total_visits || customer.visits || 0;
+      const init = initials(customer.first_name, customer.last_name);
+      const fullName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim();
+      const cycleVisits = visits % 10 || (visits > 0 ? 10 : 0);
+
+      document.getElementById('detailAvatar').textContent = init;
+      document.getElementById('detailName').textContent = fullName || 'Cliente senza nome';
+      document.getElementById('detailEmail').textContent = customer.email || '—';
+
+      // Build dots for current cycle
+      const dotsHtml = Array.from({length: 10}, (_, i) =>
+        `<div class="detail-dot ${i < cycleVisits ? 'filled' : ''}"></div>`
+      ).join('');
+
+      document.getElementById('detailBody').innerHTML = `
+        <div class="detail-row">
+          <span class="detail-row-label">Visite totali</span>
+          <span class="detail-row-value" style="color: var(--red-accent)">${visits}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Premi ottenuti</span>
+          <span class="detail-row-value" style="color: var(--gold-promo)">${Math.floor(visits / 10)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Iscrizione</span>
+          <span class="detail-row-value">${formatDate(customer.created_at || customer.registered_at)}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row-label">Premio attivo</span>
+          <span class="detail-row-value" style="color: ${customer.promotion_active ? 'var(--gold-promo)' : 'var(--text-secondary)'}">
+            ${customer.promotion_active ? '🎁 Sì' : 'No'}
+          </span>
+        </div>
+        <div class="detail-row" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+          <span class="detail-row-label">Ciclo attuale (${cycleVisits}/10)</span>
+          <div class="detail-dots">${dotsHtml}</div>
+        </div>
+      `;
+
+      document.getElementById('customerDetail').classList.add('open');
+      document.getElementById('detailBackdrop').classList.add('visible');
+    }
+
+    function closeCustomerDetail() {
+      document.getElementById('customerDetail').classList.remove('open');
+      document.getElementById('detailBackdrop').classList.remove('visible');
+    }
+
+    document.getElementById('btnCloseDetail').addEventListener('click', closeCustomerDetail);
+    document.getElementById('detailBackdrop').addEventListener('click', closeCustomerDetail);
+
+    // =============================================
+    // STATISTICS
+    // =============================================
+    async function loadStats() {
+      try {
+        // Use customers API and compute stats client-side
+        const res = await fetch(`${API_BASE_URL}/api/customers`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const customers = Array.isArray(data) ? data : (data.customers || []);
+
+        setOnlineStatus(true);
+
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+        const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+
+        const totalCustomers = customers.length;
+        const totalPrizes = customers.reduce((sum, c) => sum + Math.floor((c.total_visits || c.visits || 0) / 10), 0);
+        const newThisWeek = customers.filter(c => {
+          const d = c.created_at || c.registered_at;
+          return d && new Date(d) >= weekAgo;
+        }).length;
+
+        // Today visits: use server data if available, else local counter
+        let todayVisits = state.todayScans;
+        if (data.today_visits !== undefined) todayVisits = data.today_visits;
+
+        document.getElementById('statTotal').textContent = totalCustomers;
+        document.getElementById('statToday').textContent = todayVisits;
+        document.getElementById('statPrizes').textContent = totalPrizes;
+        document.getElementById('statNew').textContent = newThisWeek;
+
+        const now2 = new Date();
+        document.getElementById('lastRefresh').textContent =
+          `Aggiornato alle ${now2.getHours().toString().padStart(2,'0')}:${now2.getMinutes().toString().padStart(2,'0')}`;
+
+      } catch (err) {
+        setOnlineStatus(false);
+        showToast('Errore caricamento statistiche', true);
+        // Show local data if any
+        document.getElementById('statToday').textContent = state.todayScans;
+        document.getElementById('statPrizes').textContent = state.todayPrizes;
+      }
+    }
+
+    document.getElementById('btnRefreshStats').addEventListener('click', loadStats);
+
+    // =============================================
+    // GLOBAL CLICK — INIT AUDIO CTX
+    // =============================================
+    document.addEventListener('click', function initAudio() {
+      ensureAudioCtx();
+      document.removeEventListener('click', initAudio);
+    }, { once: true });
+
+    // =============================================
+    // ESCAPE HELPERS (XSS prevention)
+    // =============================================
+    function escapeHtml(str) {
+      if (!str && str !== 0) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function escapeAttr(str) {
+      return escapeHtml(str);
+    }
+
+    // =============================================
+    // EXPOSE FOR INLINE ONCLICK
+    // =============================================
+    window.openCustomerDetail = openCustomerDetail;
+
+    // =============================================
+    // BOOT
+    // =============================================
+    (function boot() {
+      // Initialize scanner immediately
+      initScanner();
+
+      // Pre-load customers in background
+      loadCustomers(false);
+
+      // Update today counters
+      updateTodayCounters();
+    })();
+  </script>
+</body>
+</html>

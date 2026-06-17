@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generatore QR Ristorante BABA FOOD</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    .logo {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: #CC0000;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: #888;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #ddd;
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-size: 0.8rem;
+      color: #999;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #CC0000;
+    }
+
+    .btn-generate {
+      width: 100%;
+      padding: 14px;
+      background: #CC0000;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s;
+    }
+
+    .btn-generate:hover {
+      background: #aa0000;
+    }
+
+    .qr-section {
+      display: none;
+      margin-top: 36px;
+    }
+
+    .qr-section.visible {
+      display: block;
+    }
+
+    .qr-wrapper {
+      background: #fff;
+      display: inline-block;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .qr-wrapper canvas,
+    .qr-wrapper img {
+      display: block;
+      width: 300px !important;
+      height: 300px !important;
+    }
+
+    .qr-caption {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #CC0000;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-action:hover {
+      opacity: 0.85;
+    }
+
+    .btn-download {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    .btn-print {
+      background: #CC0000;
+      color: #fff;
+    }
+
+    .url-display {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 12px;
+      word-break: break-all;
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      body {
+        background: #fff;
+        color: #000;
+      }
+
+      .container {
+        background: #fff;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        max-width: 100%;
+      }
+
+      .logo { color: #CC0000; }
+      .subtitle { color: #555; }
+      h1 { display: none; }
+      label { display: none; }
+      input[type="text"] { display: none; }
+      .btn-generate { display: none; }
+      .qr-section { display: block !important; }
+
+      .qr-wrapper {
+        background: #fff;
+        padding: 0;
+        border: 2px solid #eee;
+      }
+
+      .qr-caption {
+        color: #CC0000;
+        font-size: 1.2rem;
+      }
+
+      .actions { display: none; }
+      .url-display { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">BABA FOOD</div>
+    <div class="subtitle">Loyalty System</div>
+    <h1>Generatore QR Ristorante</h1>
+
+    <label for="urlInput">URL del sito cliente</label>
+    <input
+      type="text"
+      id="urlInput"
+      value="http://localhost:3000/register.html"
+      placeholder="http://localhost:3000/register.html"
+    />
+
+    <button class="btn-generate" onclick="generateQR()">Genera QR Code</button>
+
+    <div class="qr-section" id="qrSection">
+      <div class="qr-wrapper">
+        <div id="qrCanvas"></div>
+      </div>
+      <div class="qr-caption">Scansiona per la tua carta fedeltà</div>
+      <div class="actions">
+        <button class="btn-action btn-download" onclick="downloadQR()">Scarica PNG</button>
+        <button class="btn-action btn-print" onclick="window.print()">Stampa</button>
+      </div>
+      <div class="url-display" id="urlDisplay"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentQRCanvas = null;
+
+    function generateQR() {
+      const url = document.getElementById('urlInput').value.trim();
+      if (!url) {
+        alert('Inserisci un URL valido.');
+        return;
+      }
+
+      const container = document.getElementById('qrCanvas');
+      container.innerHTML = '';
+
+      QRCode.toCanvas(document.createElement('canvas'), url, {
+        width: 300,
+        margin: 1,
+        color: { dark: '#000000', light: '#ffffff' }
+      }, function (err, canvas) {
+        if (err) {
+          alert('Errore nella generazione del QR: ' + err.message);
+          return;
+        }
+        canvas.style.width = '300px';
+        canvas.style.height = '300px';
+        container.appendChild(canvas);
+        currentQRCanvas = canvas;
+
+        document.getElementById('qrSection').classList.add('visible');
+        document.getElementById('urlDisplay').textContent = url;
+      });
+    }
+
+    function downloadQR() {
+      if (!currentQRCanvas) return;
+      const link = document.createElement('a');
+      link.download = 'BABAFOOD-loyalty-qr.png';
+      link.href = currentQRCanvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Genera automaticamente all'avvio con il valore default
+    window.addEventListener('DOMContentLoaded', function () {
+      generateQR();
+    });
+  </script>
+</body>
+</html>
