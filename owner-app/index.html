@@ -1863,7 +1863,7 @@
 
     function showScanResult(data) {
       const customer = data.customer || data;
-      const visits = customer.total_visits || customer.visits || 0;
+      const visits = data.visit_count || customer.visit_count || customer.total_visits || customer.visits || 0;
       const isPrize = (visits % 10 === 0) && visits > 0;
 
       // Populate modal
@@ -2065,10 +2065,10 @@
       }
 
       // Sort by visits desc
-      const sorted = [...list].sort((a, b) => (b.total_visits || b.visits || 0) - (a.total_visits || a.visits || 0));
+      const sorted = [...list].sort((a, b) => (b.visit_count || b.total_visits || b.visits || 0) - (a.visit_count || a.total_visits || a.visits || 0));
 
       listEl.innerHTML = sorted.map(c => {
-        const visits = c.total_visits || c.visits || 0;
+        const visits = c.visit_count || c.total_visits || c.visits || 0;
         const hasPrize = c.promotion_active || false;
         const init = initials(c);
         const name = fullName(c);
@@ -2111,7 +2111,7 @@
       );
       if (!customer) return;
 
-      const visits = customer.total_visits || customer.visits || 0;
+      const visits = customer.visit_count || customer.total_visits || customer.visits || 0;
       const init = initials(customer);
       const name = fullName(customer);
       const cycleVisits = visits % 10 || (visits > 0 ? 10 : 0);
@@ -2180,7 +2180,7 @@
         const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
 
         const totalCustomers = customers.length;
-        const totalPrizes = customers.reduce((sum, c) => sum + Math.floor((c.total_visits || c.visits || 0) / 10), 0);
+        const totalPrizes = customers.reduce((sum, c) => sum + Math.floor((c.visit_count || c.total_visits || c.visits || 0) / 10), 0);
         const newThisWeek = customers.filter(c => {
           const d = c.created_at || c.registered_at;
           return d && new Date(d) >= weekAgo;
