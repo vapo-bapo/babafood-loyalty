@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>BABA FOOD — Staff Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+      color: #FFFFFF;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url('/media/background.jpeg');
+      background-size: cover;
+      background-position: center;
+      z-index: -2;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 8, 8, 0.82);
+      z-index: -1;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%       { transform: translateX(-8px); }
+      40%       { transform: translateX(8px); }
+      60%       { transform: translateX(-5px); }
+      80%       { transform: translateX(5px); }
+    }
+
+    .top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #CC0000, #FF2222, #CC0000, transparent);
+      background-size: 200% 100%;
+      animation: shimmer 3s linear infinite;
+      z-index: 10;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: rgba(18, 18, 18, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 36px 28px 32px;
+      animation: fadeInUp 0.6s ease both;
+    }
+
+    .logo-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .logo-img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 14px;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #FF2222;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #666;
+      margin-top: -6px;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 0 0 24px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: #555;
+      pointer-events: none;
+    }
+
+    .password-input {
+      width: 100%;
+      padding: 14px 44px 14px 42px;
+      background: rgba(0,0,0,0.5);
+      border: 1.5px solid #2A2A2A;
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .password-input::placeholder { color: #444; }
+
+    .password-input:focus {
+      border-color: #CC0000;
+      box-shadow: 0 0 0 3px rgba(204,0,0,0.15);
+    }
+
+    .password-input.invalid {
+      border-color: #FF2222;
+      box-shadow: 0 0 0 3px rgba(255,34,34,0.15);
+      animation: shake 0.4s ease;
+    }
+
+    .toggle-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .toggle-eye:hover { color: #999; }
+
+    .error-msg {
+      font-size: 12px;
+      color: #FF6666;
+      min-height: 18px;
+      margin-top: -14px;
+      margin-bottom: 16px;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: #CC0000;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-login:hover:not(:disabled) { background: #FF2222; transform: translateY(-1px); }
+    .btn-login:active:not(:disabled) { transform: translateY(0); }
+    .btn-login:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    .btn-login .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    .btn-login.loading .spinner { display: block; }
+    .btn-login.loading .btn-text { opacity: 0.8; }
+
+    .footer-note {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 11px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar"></div>
+
+<div class="card">
+  <div class="logo-wrap">
+    <img src="/media/logo.gif" alt="BABA FOOD" class="logo-img" />
+    <div class="brand-name">BABA FOOD</div>
+    <div class="brand-sub">Area Staff</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <label class="field-label" for="passwordInput">Password di accesso</label>
+
+  <div class="input-wrap">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+    </svg>
+    <input
+      type="password"
+      id="passwordInput"
+      class="password-input"
+      placeholder="Inserisci la password"
+      autocomplete="current-password"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
+    <button class="toggle-eye" id="toggleEye" type="button" tabindex="-1">
+      <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <button class="btn-login" id="btnLogin" type="button">
+    <div class="spinner"></div>
+    <span class="btn-text">Accedi alla dashboard</span>
+  </button>
+
+  <p class="footer-note">Accesso riservato allo staff BABA FOOD</p>
+</div>
+
+<script>
+  const CORRECT_PASSWORD = 'BABA-FOOD-2024';
+  const SESSION_KEY = 'baba_staff_auth';
+
+  // Already logged in → redirect immediately
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    window.location.replace('index.html');
+  }
+
+  const input   = document.getElementById('passwordInput');
+  const btn     = document.getElementById('btnLogin');
+  const errMsg  = document.getElementById('errorMsg');
+  const eyeBtn  = document.getElementById('toggleEye');
+  const eyeIcon = document.getElementById('eyeIcon');
+
+  // Show/hide password
+  eyeBtn.addEventListener('click', () => {
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    eyeIcon.innerHTML = isPassword
+      ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+      : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  });
+
+  function attemptLogin() {
+    const val = input.value;
+    errMsg.textContent = '';
+    input.classList.remove('invalid');
+
+    if (!val) {
+      errMsg.textContent = 'Inserisci la password per accedere.';
+      input.classList.add('invalid');
+      return;
+    }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    // Small delay for UX feedback
+    setTimeout(() => {
+      if (val === CORRECT_PASSWORD) {
+        sessionStorage.setItem(SESSION_KEY, '1');
+        window.location.replace('index.html');
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        input.classList.add('invalid');
+        input.value = '';
+        errMsg.textContent = 'Password errata. Riprova.';
+        input.focus();
+      }
+    }, 400);
+  }
+
+  btn.addEventListener('click', attemptLogin);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') attemptLogin(); });
+  input.addEventListener('input', () => {
+    if (input.classList.contains('invalid')) {
+      input.classList.remove('invalid');
+      errMsg.textContent = '';
+    }
+  });
+
+  input.focus();
+</script>
+
+</body>
+</html>

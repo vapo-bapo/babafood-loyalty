@@ -9,13 +9,18 @@ const customerRouter = require('./routes/customer');
 const scanRouter = require('./routes/scan');
 const passesRouter = require('./routes/passes');
 
+const smsRouter = require('./routes/sms');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
+app.use('/media', express.static(path.join(__dirname, '..', 'media')));
+
 app.use('/api/register', registerRouter);
+app.use('/api/sms', smsRouter);
 app.use('/api/customer', customerRouter);
 app.use('/api/customers', (req, res) => {
   const customers = db.prepare(`
@@ -47,6 +52,8 @@ app.get('/api/restaurant-qr', async (req, res) => {
   }
 });
 
+app.get('/owner', (req, res) => res.redirect('/owner/login.html'));
+app.get('/owner/', (req, res) => res.redirect('/owner/login.html'));
 app.use('/owner', express.static(path.join(__dirname, '..', 'owner-app')));
 app.use('/', express.static(path.join(__dirname, '..', 'customer-app')));
 

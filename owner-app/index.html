@@ -1083,6 +1083,202 @@
     }
 
     /* =============================================
+       TAB 4: SMS BROADCAST
+    ============================================= */
+    .sms-section {
+      padding: 16px;
+    }
+
+    .sms-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .sms-subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .sms-recipients-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,170,68,0.12);
+      border: 1px solid var(--green-success);
+      color: var(--green-success);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sms-card {
+      background: var(--gray-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+    }
+
+    .sms-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    .sms-textarea {
+      width: 100%;
+      background: var(--black);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 13px 14px;
+      resize: none;
+      outline: none;
+      min-height: 140px;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .sms-textarea::placeholder { color: #444; }
+    .sms-textarea:focus { border-color: var(--red-primary); }
+
+    .sms-char-count {
+      text-align: right;
+      font-size: 11px;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    .sms-char-count.warn { color: var(--gold-promo); }
+    .sms-char-count.over { color: var(--red-accent); }
+
+    .btn-sms-send {
+      width: 100%;
+      padding: 16px;
+      background: var(--red-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.15s, opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-sms-send:hover:not(:disabled) { background: var(--red-accent); transform: translateY(-1px); }
+    .btn-sms-send:active:not(:disabled) { transform: translateY(0); }
+    .btn-sms-send:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-sms-send .spinner { display: none; }
+    .btn-sms-send.loading .spinner { display: block; }
+
+    .sms-result-card {
+      background: var(--gray-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .sms-result-card.show { display: block; }
+
+    .sms-result-card.success { border-color: var(--green-success); }
+    .sms-result-card.error   { border-color: var(--red-accent); }
+
+    .sms-result-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .sms-result-title.success { color: var(--green-success); }
+    .sms-result-title.error   { color: var(--red-accent); }
+
+    .sms-result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sms-result-stat {
+      background: var(--gray-mid);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .sms-result-stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .sms-result-stat-value.green { color: var(--green-success); }
+    .sms-result-stat-value.red   { color: var(--red-accent); }
+
+    .sms-result-stat-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    .sms-result-details {
+      max-height: 160px;
+      overflow-y: auto;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .sms-result-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .sms-result-row:last-child { border-bottom: none; }
+    .sms-status-ok   { color: var(--green-success); font-size: 14px; }
+    .sms-status-fail { color: var(--red-accent);    font-size: 14px; }
+
+    .sms-not-configured {
+      background: rgba(204,0,0,0.08);
+      border: 1px solid rgba(204,0,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #FF8888;
+      line-height: 1.6;
+    }
+
+    .sms-not-configured strong { color: var(--red-accent); display: block; margin-bottom: 4px; }
+
+    /* =============================================
        RESPONSIVE ADJUSTMENTS
     ============================================= */
     @media (max-height: 600px) {
@@ -1217,6 +1413,55 @@
       </div>
     </div>
 
+    <!-- TAB 4: SMS -->
+    <div class="tab-panel" id="panel-sms">
+      <div class="sms-section">
+        <div class="sms-title">Invia SMS</div>
+        <p class="sms-subtitle">Manda un messaggio promozionale a tutti i clienti con numero di telefono.</p>
+
+        <div class="sms-recipients-badge" id="smsRecipientsBadge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span id="smsRecipientsCount">—</span> destinatari
+        </div>
+
+        <div id="smsNotConfigured" class="sms-not-configured" style="display:none">
+          <strong>⚠️ SMS non configurato</strong>
+          Per abilitare l'invio SMS configura le variabili d'ambiente:<br>
+          <code>TWILIO_ACCOUNT_SID</code>, <code>TWILIO_AUTH_TOKEN</code>, <code>TWILIO_FROM_NUMBER</code>
+        </div>
+
+        <div class="sms-card">
+          <div class="sms-card-label">Testo del messaggio</div>
+          <textarea
+            class="sms-textarea"
+            id="smsMessage"
+            placeholder="Es: Ciao! Solo per questa settimana: 2 panini al prezzo di 1 da BABA FOOD. Vieni a trovarci! 🌮"
+            maxlength="480"
+          ></textarea>
+          <div class="sms-char-count" id="smsCharCount">0 / 160 caratteri</div>
+        </div>
+
+        <button class="btn-sms-send" id="btnSmsSend" type="button">
+          <div class="spinner" style="width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;"></div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" id="smsSendIcon">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+          Invia a tutti i clienti
+        </button>
+
+        <div class="sms-result-card" id="smsResultCard">
+          <div class="sms-result-title" id="smsResultTitle"></div>
+          <div class="sms-result-grid" id="smsResultGrid"></div>
+          <div class="sms-result-details" id="smsResultDetails"></div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- BOTTOM NAVIGATION -->
@@ -1243,6 +1488,12 @@
         <line x1="6" y1="20" x2="6" y2="14"/>
       </svg>
       Statistiche
+    </button>
+    <button class="nav-tab" data-tab="sms" id="tab-sms">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      SMS
     </button>
   </nav>
 
@@ -1294,6 +1545,11 @@
 
   <script>
     'use strict';
+
+    // Auth guard — redirect to login if not authenticated
+    if (sessionStorage.getItem('baba_staff_auth') !== '1') {
+      window.location.replace('login.html');
+    }
 
     // =============================================
     // CONFIGURATION
@@ -1446,6 +1702,10 @@
 
       if (tab === 'stats') {
         loadStats();
+      }
+
+      if (tab === 'sms') {
+        loadSmsRecipientsCount();
       }
     }
 
@@ -1943,6 +2203,115 @@
     }
 
     document.getElementById('btnRefreshStats').addEventListener('click', loadStats);
+
+    // =============================================
+    // SMS BROADCAST
+    // =============================================
+    async function loadSmsRecipientsCount() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/sms/recipients-count`);
+        const data = await res.json();
+        document.getElementById('smsRecipientsCount').textContent = data.count ?? '—';
+      } catch {
+        document.getElementById('smsRecipientsCount').textContent = '?';
+      }
+    }
+
+    const smsTextarea = document.getElementById('smsMessage');
+    const smsCharCount = document.getElementById('smsCharCount');
+
+    smsTextarea.addEventListener('input', () => {
+      const len = smsTextarea.value.length;
+      const smsCount = Math.ceil(len / 160) || 1;
+      const label = len <= 160
+        ? `${len} / 160 caratteri`
+        : `${len} caratteri (${smsCount} SMS per destinatario)`;
+      smsCharCount.textContent = label;
+      smsCharCount.className = 'sms-char-count' + (len > 320 ? ' over' : len > 160 ? ' warn' : '');
+    });
+
+    document.getElementById('btnSmsSend').addEventListener('click', async () => {
+      const message = smsTextarea.value.trim();
+      if (!message) {
+        smsTextarea.focus();
+        showToast('Scrivi un messaggio prima di inviare', true);
+        return;
+      }
+
+      const recipientsCount = parseInt(document.getElementById('smsRecipientsCount').textContent) || 0;
+      if (recipientsCount === 0) {
+        showToast('Nessun cliente con numero di telefono', true);
+        return;
+      }
+
+      if (!confirm(`Inviare questo SMS a ${recipientsCount} clienti?`)) return;
+
+      const btn = document.getElementById('btnSmsSend');
+      const resultCard = document.getElementById('smsResultCard');
+      btn.classList.add('loading');
+      btn.disabled = true;
+      document.getElementById('smsSendIcon').style.display = 'none';
+      resultCard.classList.remove('show', 'success', 'error');
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/sms/broadcast`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          // Not configured or server error
+          if (res.status === 503) {
+            document.getElementById('smsNotConfigured').style.display = 'block';
+          }
+          throw new Error(data.error || `HTTP ${res.status}`);
+        }
+
+        resultCard.className = 'sms-result-card show ' + (data.failed === 0 ? 'success' : 'error');
+        document.getElementById('smsResultTitle').className = 'sms-result-title ' + (data.failed === 0 ? 'success' : 'error');
+        document.getElementById('smsResultTitle').textContent = data.failed === 0
+          ? `✓ Tutti gli SMS inviati con successo!`
+          : `⚠ Invio completato con ${data.failed} errori`;
+
+        document.getElementById('smsResultGrid').innerHTML = `
+          <div class="sms-result-stat">
+            <div class="sms-result-stat-value green">${data.sent}</div>
+            <div class="sms-result-stat-label">Inviati</div>
+          </div>
+          <div class="sms-result-stat">
+            <div class="sms-result-stat-value ${data.failed > 0 ? 'red' : ''}">${data.failed}</div>
+            <div class="sms-result-stat-label">Falliti</div>
+          </div>
+        `;
+
+        if (data.results && data.results.length > 0) {
+          document.getElementById('smsResultDetails').innerHTML = data.results.map(r => `
+            <div class="sms-result-row">
+              <span class="${r.ok ? 'sms-status-ok' : 'sms-status-fail'}">${r.ok ? '✓' : '✗'}</span>
+              <span>${escapeHtml(r.nome || r.telefono)}</span>
+              ${r.errore ? `<span style="color:#FF6666;font-size:11px"> — ${escapeHtml(r.errore)}</span>` : ''}
+            </div>
+          `).join('');
+        }
+
+        showToast(`SMS inviati: ${data.sent}/${data.total}`, data.failed > 0);
+      } catch (err) {
+        if (!document.getElementById('smsNotConfigured').style.display || document.getElementById('smsNotConfigured').style.display === 'none') {
+          resultCard.className = 'sms-result-card show error';
+          document.getElementById('smsResultTitle').className = 'sms-result-title error';
+          document.getElementById('smsResultTitle').textContent = '✗ Errore invio';
+          document.getElementById('smsResultGrid').innerHTML = '';
+          document.getElementById('smsResultDetails').innerHTML = `<span style="color:#FF6666">${escapeHtml(err.message)}</span>`;
+        }
+        showToast('Errore: ' + err.message, true);
+      } finally {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        document.getElementById('smsSendIcon').style.display = '';
+      }
+    });
 
     // =============================================
     // GLOBAL CLICK — INIT AUDIO CTX
